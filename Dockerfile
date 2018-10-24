@@ -1,13 +1,18 @@
 FROM haproxy:alpine
 MAINTAINER John Peel "john@dgby.org"
 
-ADD http://git.infradead.org/users/dwmw2/vpnc-scripts.git/blob_plain/HEAD:/vpnc-script /vpnc-script
+# Adding s6-overlay
+ADD https://github.com/just-containers/s6-overlay/releases/download/v1.21.7.0/s6-overlay-amd64.tar.gz /tmp/
+RUN gunzip -c /tmp/s6-overlay-amd64.tar.gz | tar -xf - -C /
 
-RUN apk add openconnect --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted \
-    && chmod +x /vpnc-script \
-    && echo "hosts: files dns" > /etc/nsswitch.conf
+# Install openconnect and vpnc
+RUN apk add openconnect vpnc --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted \
+ && echo "hosts: files dns" > /etc/nsswitch.conf
 
-COPY docker-entrypoint.sh /
-COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
+COPY haproxy-run /etc/services.d/haproxy/run
+COPY openconnect-run /etc/services.d/openconnect/run
+
+VOLUME /conf
 
 EXPOSE 1521
+ENTRYPOINT ["/init"]

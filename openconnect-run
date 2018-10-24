@@ -1,0 +1,2 @@
+#!/bin/sh
+exec "sh -c 'echo $ANYCONNECT_PASSWORD | openconnect --config=/conf/openconnect.conf --user=$ANYCONNECT_USER $ANYCONNECT_SERVER'"
