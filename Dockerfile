@@ -9,6 +9,11 @@ RUN gunzip -c /tmp/s6-overlay-amd64.tar.gz | tar -xf - -C /
 RUN apk add openconnect vpnc --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted \
  && echo "hosts: files dns" > /etc/nsswitch.conf
 
+# Update vpnc-script
+ADD http://git.infradead.org/users/dwmw2/vpnc-scripts.git/blob_plain/HEAD:/vpnc-script /etc/vpnc/vpnc-script
+RUN chmod +x /etc/vpnc/vpnc-script
+
+# Add service files
 COPY haproxy-run /etc/services.d/haproxy/run
 COPY openconnect-run /etc/services.d/openconnect/run
 

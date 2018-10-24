@@ -1,2 +1,2 @@
-#!/bin/sh
-exec "haproxy -W -db -f /conf/haproxy.conf"
+#!/usr/bin/with-contenv sh
+haproxy -W -db -f /conf/haproxy.conf
